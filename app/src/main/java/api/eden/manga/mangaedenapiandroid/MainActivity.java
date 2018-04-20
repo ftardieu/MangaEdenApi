@@ -1,19 +1,18 @@
 package api.eden.manga.mangaedenapiandroid;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-
-
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.activeandroid.ActiveAndroid;
+
+import api.eden.manga.mangaedenapiandroid.model.Profile;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,10 +43,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+        Profile profile = new Profile();
 
-        DialogClassFragment myDialog = new DialogClassFragment();
 
-        myDialog.show(getFragmentManager(),"PseudoSubmit");
+        if (profile.getProfile() == null) {
+            DialogClassFragment myDialog = new DialogClassFragment();
+
+
+            myDialog.show(getFragmentManager(),"PseudoSubmit");
+        }
+
+
 
         setContentView(R.layout.activity_main);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
