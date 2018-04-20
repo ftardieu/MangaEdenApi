@@ -7,7 +7,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
+import api.eden.manga.mangaedenapiandroid.model.Profile;
 
 public class DialogClassFragment extends DialogFragment {
 
@@ -26,11 +32,19 @@ public class DialogClassFragment extends DialogFragment {
                 .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // sign in the user ...
+                        final EditText etSearch = (EditText)getDialog().findViewById(R.id.pseudo);
+                        Profile profile = new Profile(etSearch.getText().toString());
+                        profile.save();
                     }
                 });
 
 
         return builder.create();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        Profile profile = new Profile("Default");
+        profile.save();
     }
 }
