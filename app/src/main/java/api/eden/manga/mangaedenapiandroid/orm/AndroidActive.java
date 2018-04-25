@@ -1,4 +1,4 @@
-package api.eden.manga.mangaedenapiandroid;
+package api.eden.manga.mangaedenapiandroid.orm;
 
 import android.app.Application;
 

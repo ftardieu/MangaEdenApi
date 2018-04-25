@@ -1,16 +1,29 @@
-package api.eden.manga.mangaedenapiandroid.models;
+package api.eden.manga.mangaedenapiandroid.model;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+import api.eden.manga.mangaedenapiandroid.model.Manga;
+
 public class Response
 {
+    @SerializedName("end")
+    @Expose
     private int end;
+    @SerializedName("page")
+    @Expose
     private int page;
+    @SerializedName("start")
+    @Expose
     private int start;
+    @SerializedName("manga")
+    @Expose
     private ArrayList<Manga> manga;
 
 
-
+    public Response(){super();}
     public int getEnd() { return this.end; }
 
     public void setEnd(int end) { this.end = end; }
