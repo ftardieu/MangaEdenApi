@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import api.eden.manga.mangaedenapiandroid.MainActivity;
 import api.eden.manga.mangaedenapiandroid.R;
 import api.eden.manga.mangaedenapiandroid.model.Manga;
 
@@ -28,10 +29,12 @@ public class MangaFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_manga, container, false);
         test = (TextView) view.findViewById(R.id.textView2);
-        test.setText(getArguments().getString("manga_title"));
+        getActivity().setTitle(getArguments().getString("manga_title")) ;
+        test.setText(getArguments().getString("manga_id"));
 
         return view;
     }
+
 
 
 }

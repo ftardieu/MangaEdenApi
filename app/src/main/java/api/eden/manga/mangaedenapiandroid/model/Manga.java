@@ -92,6 +92,7 @@ public class Manga extends Model
     public static List<Manga> getMangas() {
         return new Select()
                 .from(Manga.class)
+                .orderBy("H DESC")
                 .execute();
     }
 }

@@ -24,8 +24,17 @@ public class Profile extends Model {
         super();
     }
 
-    public Profile( String pseudo) {
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public Profile(String pseudo) {
         super();
+
         this.pseudo = pseudo;
     }
 

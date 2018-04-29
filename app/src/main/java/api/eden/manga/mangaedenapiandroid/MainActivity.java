@@ -56,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         mEden = ApiUtils.getService();
+
         loadAnswers(linlaHeaderProgress);
+
 
 
 

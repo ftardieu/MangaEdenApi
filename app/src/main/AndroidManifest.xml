@@ -20,6 +20,7 @@
              api.eden.manga.mangaedenapiandroid.model.FavoritesManga ,
              api.eden.manga.mangaedenapiandroid.model.Manga" />
         <activity
+            android:configChanges="orientation|screenSize"
             android:name=".MainActivity"
             android:label="@string/app_name">
             <meta-data
