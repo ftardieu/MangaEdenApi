@@ -75,7 +75,8 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        Profile profile = new Profile();
+        profile = profile.getProfile();
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         setHasOptionsMenu(true);
@@ -86,14 +87,15 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
             mAlreadyLoaded = true;
             Manga manga = new Manga();
             mangaList = manga.getMangas();
-            mAdapter = new MangasAdapter(getActivity(), mangaList , mangaList ,this);
+            mAdapter = new MangasAdapter(getActivity(), mangaList , mangaList ,this , profile);
             mAdapter.notifyDataSetChanged();
         }else{
-            mAdapter = new MangasAdapter(getActivity(),mangaList ,mAdapter.getMangaListFiltered() ,this);
+            mAdapter = new MangasAdapter(getActivity(),mangaList ,mAdapter.getMangaListFiltered() ,this , profile);
+            getActivity().setTitle("MangaEden") ;
+
         }
 
         recyclerView.setAdapter(mAdapter);
-
 
         return view;
     }

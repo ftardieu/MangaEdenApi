@@ -34,11 +34,12 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
     private List<Manga> mangaList;
     private List<Manga> mangaListFiltered;
     private MangasAdapterListener listener;
+    private Profile profile;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public ImageView thumbnail;
-        public ToggleButton myfavoritesButton;
+        public ToggleButton myfavoritesButton  ;
 
         public MyViewHolder(View view) {
             super(view);
@@ -46,18 +47,12 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
             myfavoritesButton = (ToggleButton) view.findViewById(R.id.myfavoritesButton);
 
-            // TODO Ischecked -- >> Manga - IsFavorite
-            Boolean isFavorite = false ;
-            myfavoritesButton.setChecked(isFavorite);
-            myfavoritesButton.setBackgroundDrawable(ContextCompat.getDrawable(context , R.drawable.ic_star_empty));
             myfavoritesButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                     Manga manga = mangaListFiltered.get(getAdapterPosition());
                     SearchFragment searchFragment  = new SearchFragment();
                     searchFragment.addFarovitesManga(isChecked ,manga );
-
                     if (isChecked) {
                         myfavoritesButton.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_full));
                     } else {
@@ -67,7 +62,6 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
             });
 
             view.setOnClickListener(new View.OnClickListener() {
-                @Override
                 public void onClick(View view) {
                     // send selected manga in callback
                     listener.onMangaSelected(mangaListFiltered.get(getAdapterPosition()));
@@ -77,11 +71,12 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
     }
 
 
-    public MangasAdapter(Context context, List<Manga> contactList,  List<Manga> contactListFiltered,  MangasAdapterListener listener) {
+    public MangasAdapter(Context context, List<Manga> contactList,  List<Manga> contactListFiltered,  MangasAdapterListener listener , Profile profile) {
         this.context = context;
         this.listener = listener;
         this.mangaList = contactList;
         this.mangaListFiltered = contactListFiltered;
+        this.profile = profile;
     }
 
     @Override
@@ -95,6 +90,20 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Manga manga = mangaListFiltered.get(position);
         holder.name.setText(manga.getT());
+
+        Boolean isFavorite = false ;
+        FavoritesManga favoriteManga = new FavoritesManga();
+        if (favoriteManga.getIsFavoriteManga(manga, profile) != null ){
+            favoriteManga = favoriteManga.getIsFavoriteManga(manga, profile);
+            isFavorite = favoriteManga.getFavorite();
+        }
+
+        holder.myfavoritesButton.setChecked(isFavorite);
+        if (isFavorite){
+            holder.myfavoritesButton.setBackgroundDrawable(ContextCompat.getDrawable(context , R.drawable.ic_star_full));
+        }else{
+            holder.myfavoritesButton.setBackgroundDrawable(ContextCompat.getDrawable(context , R.drawable.ic_star_empty));
+        }
 
         Glide.with(context)
                 .load("https://cdn.mangaeden.com/mangasimg/" + manga.getIm())

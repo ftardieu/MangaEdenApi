@@ -2,6 +2,7 @@ package api.eden.manga.mangaedenapiandroid;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.activeandroid.ActiveAndroid;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import api.eden.manga.mangaedenapiandroid.adapter.MangasAdapter;
 import api.eden.manga.mangaedenapiandroid.fragments.DialogClassFragment;
@@ -45,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    showFragment(new HomeFragment() , false);
+                    showFragment(new HomeFragment() , false );
                     return true;
                 case R.id.navigation_search:
+                    Log.d("test", "test");
                     showFragment(new SearchFragment() , false );
                     return true;
             }
@@ -68,12 +71,10 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
+
         mEden = ApiUtils.getService();
 
-        loadAnswers(linlaHeaderProgress);
-
-
+        AsyncTask asyncCaller =  new AsyncCaller(linlaHeaderProgress).execute();
 
 
 
@@ -94,47 +95,74 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void loadAnswers(final LinearLayout linlaHeaderProgress) {
-        mEden.getResponse().enqueue(new Callback<Response>() {
+    private class AsyncCaller extends AsyncTask<Void, Void, Void>
+    {
+        private LinearLayout linearLayout;
+        public AsyncCaller (LinearLayout linlaHeaderProgress){
+            super();
+            linearLayout = linlaHeaderProgress;
+        }
 
-            @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            linearLayout.setVisibility(View.VISIBLE);
+                mEden.getResponse().enqueue(new Callback<Response>() {
 
-                if(response.isSuccessful()) {
+                    @Override
+                    public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
 
-                    List<Manga> myList = response.body().getManga();
-                    ActiveAndroid.beginTransaction();
-                    int i = 0 ;
-                    for (Manga manga : myList ){
-                        manga.save();
-                        i++;
+                        if(response.isSuccessful()) {
+
+                            List<Manga> myList = response.body().getManga();
+                            ActiveAndroid.beginTransaction();
+                            int i = 0 ;
+                            for (Manga manga : myList ){
+                                manga.save();
+                                i++;
+                                if (i == 500){
+                                    ActiveAndroid.setTransactionSuccessful();
+                                    i=0;
+                                    ActiveAndroid.endTransaction();
+                                    ActiveAndroid.beginTransaction();
+
+                                }
+                            }
+
+                            ActiveAndroid.setTransactionSuccessful();
+                            ActiveAndroid.endTransaction();
+
+                            linearLayout.setVisibility(View.GONE);
+
+                        }else {
+                            int statusCode  = response.code();
+                            Log.d("MainActivity", Integer.toString(statusCode));
+                            // handle request errors depending on status code
+                        }
+
                     }
-                    ActiveAndroid.setTransactionSuccessful();
-                    ActiveAndroid.endTransaction();
-                    Manga manga = new Manga();
-                    List<Manga> mangas = manga.getMangas();
-                    linlaHeaderProgress.setVisibility(View.GONE);
-                    showFragment(new HomeFragment() , false);
 
-                }else {
-                    int statusCode  = response.code();
-                    Log.d("MainActivity", Integer.toString(statusCode));
-                    // handle request errors depending on status code
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<Response> call, Throwable t) {
-                Log.d("MainActivity", "error loading from API");
-            }
+                    @Override
+                    public void onFailure(Call<Response> call, Throwable t) {
+                        Log.d("MainActivity", "error loading from API");
+                    }
 
 
 
 
-        });
+                });
 
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            showFragment(new HomeFragment() , false);
+        }
     }
+
 
 
 }

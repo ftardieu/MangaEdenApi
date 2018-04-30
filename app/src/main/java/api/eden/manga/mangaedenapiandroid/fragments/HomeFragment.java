@@ -4,6 +4,9 @@ package api.eden.manga.mangaedenapiandroid.fragments;
 import android.os.Bundle;
 
 
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +27,7 @@ public class HomeFragment extends Fragment implements FavoritesAdapter.Favorites
 
     private FavoritesAdapter fAdapter;
     private List<FavoritesManga> favoritesManga;
-
+    private RecyclerView recyclerView;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -34,6 +37,11 @@ public class HomeFragment extends Fragment implements FavoritesAdapter.Favorites
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        recyclerView = view.findViewById(R.id.listFavorites);
+        setHasOptionsMenu(true);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
         Profile profile = new Profile();
         setRetainInstance(false);
         DialogClassFragment myDialog = new DialogClassFragment();
@@ -46,13 +54,13 @@ public class HomeFragment extends Fragment implements FavoritesAdapter.Favorites
 
             fAdapter = new FavoritesAdapter(getActivity(), favoritesManga  ,this);
             fAdapter .notifyDataSetChanged();
+
             //Todo set le titre pour chaque page.
             getActivity().setTitle("MangaEdenApiAndroid") ;
         }
 
-
-
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        recyclerView.setAdapter(fAdapter);
+        return view;
     }
 
 

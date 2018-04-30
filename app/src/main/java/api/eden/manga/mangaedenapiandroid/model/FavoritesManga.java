@@ -120,6 +120,15 @@ public class FavoritesManga extends Model{
         return new Select()
                 .from(FavoritesManga.class)
                 .where("profile_pseudo = ?" , profile.getPseudo())
+                .and("is_favorite = ?" , 1)
                 .execute();
+    }
+
+    public static FavoritesManga getIsFavoriteManga(Manga manga , Profile profile){
+        return new Select()
+                .from(FavoritesManga.class)
+                .where("manga_id = ?", manga.getI())
+                .and("profile_pseudo = ?" , profile.getPseudo())
+                .executeSingle();
     }
 }
