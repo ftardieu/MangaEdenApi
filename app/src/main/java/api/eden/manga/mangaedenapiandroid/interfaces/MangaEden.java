@@ -6,6 +6,7 @@ import api.eden.manga.mangaedenapiandroid.model.Response;
 import retrofit2.Call;
 
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 
 public interface MangaEden {
@@ -15,8 +16,8 @@ public interface MangaEden {
     Call<Response> getResponse();
 
 
-    @GET("{manga_id}/")
-    Call<MangaDetail> getMangaDetail();
+    @GET("manga/{manga_id}/")
+    Call<MangaDetail> getMangaDetail(@Path("manga_id") String manga_id);
 
 
 

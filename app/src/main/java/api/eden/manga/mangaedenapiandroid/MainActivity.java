@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                         if(response.isSuccessful()) {
 
                             List<Manga> myList = response.body().getManga();
+
                             ActiveAndroid.beginTransaction();
                             int i = 0 ;
                             for (Manga manga : myList ){

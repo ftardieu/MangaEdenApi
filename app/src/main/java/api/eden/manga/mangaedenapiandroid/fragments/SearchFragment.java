@@ -106,7 +106,6 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
         inflater.inflate(R.menu.menu_main, menu);
 
         // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setIconified(true);
@@ -116,7 +115,7 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
             mAdapter.getFilter().filter(oldSearch);
             searchView.setIconified(false);
             searchView.clearFocus();
-            //            //Todo set le titre pour chaque page
+            //Todo set le titre pour chaque page
             getActivity().setTitle("MangaEden") ;
 
         }
@@ -174,7 +173,7 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
     public FavoritesManga addFarovitesManga(Boolean isChecked , Manga manga) {
         Profile profile = new Profile();
         profile = profile.getProfile();
-        Date currentTime = Calendar.getInstance().getTime();
+         // Date currentTime = Calendar.getInstance().getTime();
 
         FavoritesManga favoritesManga = new FavoritesManga();
         favoritesManga = favoritesManga.getFavoriteManga(manga, profile);
@@ -183,12 +182,13 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
             if (favoritesManga == null){
                 favoritesManga = new FavoritesManga();
                 favoritesManga.setFavorite(true);
-                favoritesManga.setLast_chapter_read(0);
-                favoritesManga.setLast_chapter_started(0);
+                favoritesManga.setLast_chapter_read(0.0);
+                favoritesManga.setLast_chapter_started(null);
                 favoritesManga.setLast_page_read(0);
-                favoritesManga.setLast_read_at(currentTime);
+                favoritesManga.setLast_read_at(null);
                 favoritesManga.setManga_id(manga.getI());
                 favoritesManga.setProfile_pseudo(profile.getPseudo());
+                favoritesManga.setManga_alias(manga.getT());
 
 
             }else{

@@ -24,25 +24,29 @@ import api.eden.manga.mangaedenapiandroid.R;
 import api.eden.manga.mangaedenapiandroid.fragments.SearchFragment;
 import api.eden.manga.mangaedenapiandroid.model.FavoritesManga;
 import api.eden.manga.mangaedenapiandroid.model.Manga;
+import api.eden.manga.mangaedenapiandroid.model.MangaDetail;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyViewHolder>  {
 
 
     private FavoritesAdapter.FavoritesAdapterListener listener;
     private List<FavoritesManga> favoritesList;
+    private List<MangaDetail> mangaDetailList;
     private Context context;
 
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView mangaName;
-        public TextView lastChapter;
+        public TextView mangaNum;
+        public TextView mangaTitle;
         public TextView time;
 
         public MyViewHolder(View view) {
             super(view);
             mangaName = (TextView) view.findViewById(R.id.mangaName);
-            lastChapter = (TextView) view.findViewById(R.id.lastChapter);
+            mangaNum = (TextView) view.findViewById(R.id.mangaNum);
+            mangaTitle = (TextView) view.findViewById(R.id.mangaTitle);
             time = (TextView) view.findViewById(R.id.time);
 
 
@@ -78,8 +82,12 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
     @Override
     public void onBindViewHolder(FavoritesAdapter.MyViewHolder holder, final int position) {
         final FavoritesManga favoritesManga = favoritesList.get(position);
-        holder.mangaName.setText(favoritesManga.getManga_id());
-
+        holder.mangaName.setText(favoritesManga.getManga_alias());
+        holder.mangaTitle.setText((favoritesManga.getNext_chapter_title()));
+        holder.mangaNum.setText(Double.toString(favoritesManga.getNext_chapter_num()));
+        //Todo faire le holder time # différence entre currentTime et time du champ
+//        DecimalFormat format = new DecimalFormat();
+//        format.setDecimalSeparatorAlwaysShown(false);
     }
 
     public interface FavoritesAdapterListener {

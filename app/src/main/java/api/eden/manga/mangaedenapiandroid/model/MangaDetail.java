@@ -1,12 +1,14 @@
 package api.eden.manga.mangaedenapiandroid.model;
 
 import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.query.Select;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class MangaDetail extends Model{
+public class MangaDetail{
 
 
     @SerializedName("aka")
@@ -17,6 +19,7 @@ public class MangaDetail extends Model{
     private List<String> akaAlias = null;
     @SerializedName("alias")
     @Expose
+    @Column(name = "alias")
     private String alias;
     @SerializedName("artist")
     @Expose
@@ -39,9 +42,11 @@ public class MangaDetail extends Model{
     @SerializedName("categories")
     @Expose
     private List<String> categories = null;
+
     @SerializedName("chapters")
     @Expose
-    private List<List<Integer>> chapters = null;
+    private List<List<String>> chapters = null;
+
     @SerializedName("chapters_len")
     @Expose
     private Integer chaptersLen;
@@ -163,11 +168,11 @@ public class MangaDetail extends Model{
         this.categories = categories;
     }
 
-    public List<List<Integer>> getChapters() {
+    public List<List<String>> getChapters() {
         return chapters;
     }
 
-    public void setChapters(List<List<Integer>> chapters) {
+    public void setChapters(List<List<String>> chapters) {
         this.chapters = chapters;
     }
 
@@ -302,6 +307,7 @@ public class MangaDetail extends Model{
 
     public MangaDetail() {
     }
+
 
 
 }
