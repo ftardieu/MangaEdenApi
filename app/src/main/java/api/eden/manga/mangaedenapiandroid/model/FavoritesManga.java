@@ -14,7 +14,7 @@ public class FavoritesManga extends Model{
     // If name is omitted, then the field name is used.
 
     @Column(name = "last_read_at")
-    public Date last_read_at;
+    public Long last_read_at;
 
 
     @Column(name = "last_chapter_read")
@@ -58,7 +58,7 @@ public class FavoritesManga extends Model{
     public String next_chapter_title;
 
     @Column(name = "next_chapter_time")
-    public Date next_chapter_time;
+    public Long next_chapter_time;
 
     public Boolean getIs_favorite() {
         return is_favorite;
@@ -90,19 +90,19 @@ public class FavoritesManga extends Model{
         this.next_chapter_title = next_chapter_title;
     }
 
-    public Date getNext_chapter_time() {
+    public Long getNext_chapter_time() {
         return next_chapter_time;
     }
 
-    public void setNext_chapter_time(Date next_chapter_time) {
+    public void setNext_chapter_time(Long next_chapter_time) {
         this.next_chapter_time = next_chapter_time;
     }
 
-    public Date getLast_read_at() {
+    public Long getLast_read_at() {
         return last_read_at;
     }
 
-    public void setLast_read_at(Date last_read_at) {
+    public void setLast_read_at(Long last_read_at) {
         this.last_read_at = last_read_at;
     }
 
@@ -150,7 +150,7 @@ public class FavoritesManga extends Model{
         super();
     }
 
-    public FavoritesManga( Date last_read_at , Double last_chapter_read , String last_chapter_started , Integer last_page_read , String manga_id , String profile_pseudo , Boolean is_favorite) {
+    public FavoritesManga( Long last_read_at , Double last_chapter_read , String last_chapter_started , Integer last_page_read , String manga_id , String profile_pseudo , Boolean is_favorite) {
         super();
         this.last_chapter_read = last_chapter_read;
         this.last_chapter_started = last_chapter_started;

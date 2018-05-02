@@ -182,7 +182,8 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
             if (favoritesManga == null){
                 favoritesManga = new FavoritesManga();
                 favoritesManga.setFavorite(true);
-                favoritesManga.setLast_chapter_read(0.0);
+                favoritesManga.setLast_chapter_read(null);
+                favoritesManga.setNext_chapter_num(0.0);
                 favoritesManga.setLast_chapter_started(null);
                 favoritesManga.setLast_page_read(0);
                 favoritesManga.setLast_read_at(null);

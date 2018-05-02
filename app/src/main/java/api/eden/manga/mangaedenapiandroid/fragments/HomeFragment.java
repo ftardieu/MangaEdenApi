@@ -1,6 +1,7 @@
 package api.eden.manga.mangaedenapiandroid.fragments;
 
 
+import android.icu.text.NumberFormat;
 import android.os.Bundle;
 
 
@@ -16,6 +17,7 @@ import android.app.Fragment;
 import android.widget.Toast;
 
 import java.sql.Date;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,7 +74,7 @@ public class HomeFragment extends Fragment implements FavoritesAdapter.Favorites
             favoritesManga = favorites.getFavoritesMangas(profile);
             mEden = ApiUtils.getService();
 
-            fAdapter = new FavoritesAdapter(getActivity(), favoritesManga ,fListener );
+            fAdapter = new FavoritesAdapter(getActivity(), favoritesManga ,this );
 
             if (favoritesManga.size() > 0 ){
                 for (FavoritesManga fmanga : favoritesManga ) {
@@ -111,22 +113,31 @@ public class HomeFragment extends Fragment implements FavoritesAdapter.Favorites
                     List<List<String>> listChapter = response.body().getChapters();
                     listChapters = new ArrayList<>();
                     for (List<String> chapter : listChapter){
-                        Chapter c = new Chapter(Double.parseDouble(chapter.get(0)) , chapter.get(1), chapter.get(2) , chapter.get(3) );
+                        String dc = chapter.get(1).replaceAll("[\\D]","");
+                        dc = dc.substring(0, dc.length() -1 );
+                        Long dateChapter = Long.parseLong(dc);
+                        Chapter c = new Chapter(Double.parseDouble(chapter.get(0)) , dateChapter, chapter.get(2) , chapter.get(3) );
                         listChapters.add(c);
                     }
                     Chapter nextChapter  = new Chapter();
                     for (Chapter chap : listChapters){
 
-                        if (Double.compare(chap.getNum_chapter() , fManga.getLast_chapter_read()) == 0){
-                            if (nextChapter.getNum_chapter() != null){
+
+                        if (  fManga.getLast_chapter_read() != null && Double.compare(chap.getNum_chapter() , fManga.getLast_chapter_read()) == 0){
+
+                                Log.d("nextChapter" , "nextChapter");
                                 fManga.setNext_chapter_id(nextChapter.getId_chapter());
                                 fManga.setNext_chapter_num(nextChapter.getNum_chapter());
-                                //fManga.setNext_chapter_time( nextChapter.getDate_chapter());
+                                fManga.setNext_chapter_time(nextChapter.getDate_chapter());
                                 fManga.setNext_chapter_title(nextChapter.getName_chapter());
-                            }
-                            fManga.setLast_chapter_read(chap.getNum_chapter());
-                            fManga.save();
+
+                        }else if (fManga.getNext_chapter_num() == 0 &&  Double.compare(chap.getNum_chapter() , fManga.getNext_chapter_num()) == 0){
+                            fManga.setNext_chapter_id(chap.getId_chapter());
+                            fManga.setNext_chapter_num(chap.getNum_chapter());
+                            fManga.setNext_chapter_time(chap.getDate_chapter());
+                            fManga.setNext_chapter_title(chap.getName_chapter());
                         }
+                        fManga.save();
                         nextChapter = chap;
                     }
                 }else {
