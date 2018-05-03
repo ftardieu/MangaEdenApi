@@ -43,9 +43,9 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
 
         public MyViewHolder(View view) {
             super(view);
-            name = (TextView) view.findViewById(R.id.name);
-            thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
-            myfavoritesButton = (ToggleButton) view.findViewById(R.id.myfavoritesButton);
+            name = view.findViewById(R.id.name);
+            thumbnail = view.findViewById(R.id.thumbnail);
+            myfavoritesButton = view.findViewById(R.id.myfavoritesButton);
 
             myfavoritesButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

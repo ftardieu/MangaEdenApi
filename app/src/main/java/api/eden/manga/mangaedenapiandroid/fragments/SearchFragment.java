@@ -61,13 +61,10 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)
         {
             Toast.makeText(getActivity(),"PORTRAIT",Toast.LENGTH_LONG).show();
-
-            //add your code what you want to do when screen on PORTRAIT MODE
         }
         else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
             Toast.makeText(getActivity(),"LANDSCAPE",Toast.LENGTH_LONG).show();
-            //add your code what you want to do when screen on LANDSCAPE MODE
         }
     }
 
@@ -75,6 +72,7 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Log.d("search" , "searchFragment");
         Profile profile = new Profile();
         profile = profile.getProfile();
         View view = inflater.inflate(R.layout.fragment_search, container, false);
@@ -177,7 +175,6 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
 
         FavoritesManga favoritesManga = new FavoritesManga();
         favoritesManga = favoritesManga.getFavoriteManga(manga, profile);
-
         if (isChecked) {
             if (favoritesManga == null){
                 favoritesManga = new FavoritesManga();
@@ -190,15 +187,21 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
                 favoritesManga.setManga_id(manga.getI());
                 favoritesManga.setProfile_pseudo(profile.getPseudo());
                 favoritesManga.setManga_alias(manga.getT());
+                favoritesManga.setNext_chapter_num(0.0);
 
 
             }else{
                 favoritesManga.setFavorite(true);
             }
         } else {
-            favoritesManga.setFavorite(false);
+            if (favoritesManga != null){
+                favoritesManga.setFavorite(false);
+            }
         }
-        favoritesManga.save();
+        if (favoritesManga != null) {
+            favoritesManga.save();
+        }
+
         return favoritesManga;
     }
 

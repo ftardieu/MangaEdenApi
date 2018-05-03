@@ -10,6 +10,7 @@ public class AndroidActive extends com.activeandroid.app.Application {
     public void onCreate() {
         super.onCreate();
         ActiveAndroid.initialize(this);
+
     }
 }
 

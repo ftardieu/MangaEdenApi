@@ -2,6 +2,7 @@ package api.eden.manga.mangaedenapiandroid;
 
 
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,9 +36,7 @@ import retrofit2.Callback;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
-    private Integer view ;
-    private String pseudo;
+
     private MangaEden mEden;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -68,13 +67,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        Log.d("mainActivity", "mainAcivity");
         LinearLayout linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mEden = ApiUtils.getService();
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
 
-        AsyncTask asyncCaller =  new AsyncCaller(linlaHeaderProgress).execute();
+
+        loadDatas(linlaHeaderProgress);
+       // AsyncTask asyncCaller =  new AsyncCaller(linlaHeaderProgress).execute();
 
 
 
@@ -97,73 +100,79 @@ public class MainActivity extends AppCompatActivity {
 
     private class AsyncCaller extends AsyncTask<Void, Void, Void>
     {
-        private LinearLayout linearLayout;
-        public AsyncCaller (LinearLayout linlaHeaderProgress){
+        public List<Manga> myList ;
+        public LinearLayout linlaHeaderProgress ;
+        public AsyncCaller (List <Manga> myList , LinearLayout linlaHeaderProgress){
             super();
-            linearLayout = linlaHeaderProgress;
+            this.myList = myList ;
+            this.linlaHeaderProgress = linlaHeaderProgress;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            linearLayout.setVisibility(View.VISIBLE);
-                mEden.getResponse().enqueue(new Callback<Response>() {
+            Log.d("jeremy", "insert");
+            ActiveAndroid.beginTransaction();
+            int i = 0 ;
+            for (Manga manga : myList ){
+                manga.save();
 
-                    @Override
-                    public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                if (i == 100 ) {
+                    ActiveAndroid.setTransactionSuccessful();
+                    ActiveAndroid.endTransaction();
+                    i = 0;
+                    ActiveAndroid.beginTransaction();
+                }
+                i++;
 
-                        if(response.isSuccessful()) {
+            }
 
-                            List<Manga> myList = response.body().getManga();
-
-                            ActiveAndroid.beginTransaction();
-                            int i = 0 ;
-                            for (Manga manga : myList ){
-                                manga.save();
-                                i++;
-                                if (i == 500){
-                                    ActiveAndroid.setTransactionSuccessful();
-                                    i=0;
-                                    ActiveAndroid.endTransaction();
-                                    ActiveAndroid.beginTransaction();
-
-                                }
-                            }
-
-                            ActiveAndroid.setTransactionSuccessful();
-                            ActiveAndroid.endTransaction();
-
-                            linearLayout.setVisibility(View.GONE);
-
-                        }else {
-                            int statusCode  = response.code();
-                            Log.d("MainActivity", Integer.toString(statusCode));
-                            // handle request errors depending on status code
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<Response> call, Throwable t) {
-                        Log.d("MainActivity", "error loading from API");
-                    }
-
-
-
-
-                });
-
-
+            ActiveAndroid.setTransactionSuccessful();
+            ActiveAndroid.endTransaction();
             return null;
         }
 
-        @Override
+
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
+            linlaHeaderProgress.setVisibility(View.GONE);
             showFragment(new HomeFragment() , false);
         }
     }
 
+    public void loadDatas(final LinearLayout linlaHeaderProgress){
+        Log.d("LoadDatas" , "LoadDatas");
+        mEden = ApiUtils.getService();
+        mEden.getResponse().enqueue(new Callback<Response>() {
+
+
+
+            @Override
+            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+
+                if(response.isSuccessful()) {
+
+                    List<Manga> myList = response.body().getManga();
+
+                     AsyncTask asyncCaller =  new AsyncCaller(myList, linlaHeaderProgress).execute();
+
+                }else {
+                    int statusCode  = response.code();
+                    Log.d("MainActivity", Integer.toString(statusCode));
+                    // handle request errors depending on status code
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Response> call, Throwable t) {
+                Log.d("MainActivity", "error loading from API");
+            }
+
+
+
+
+        });
+    }
 
 
 }
