@@ -4,6 +4,7 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.activeandroid.query.Update;
 import com.google.gson.annotations.Expose;
 
 import java.util.List;
@@ -89,10 +90,33 @@ public class Manga extends Model
         this.a = a;
     }
 
-    public static List<Manga> getMangas() {
+    public List<Manga> getMangas() {
         return new Select()
                 .from(Manga.class)
-                .orderBy("H DESC")
+                .orderBy("h DESC")
                 .execute();
+    }
+
+    public Manga getMangaById(String id) {
+        return new Select()
+                .from(Manga.class)
+                .where("I = ?", id)
+                .executeSingle();
+    }
+
+    public Manga updateManga(Manga newValuedManga) {
+        String updateSet =
+                "i = ? , " +
+                "t = ? , " +
+                "s = ? , " +
+                "a = ? , " +
+                "ld = ? ," +
+                "im = ? ," +
+                "h = ? ,";
+        new Update(Manga.class)
+                .set(updateSet, newValuedManga.getI(), newValuedManga.getT(), newValuedManga.getS(), newValuedManga.getA(), newValuedManga.getLd(), newValuedManga.getIm(), newValuedManga.getH())
+                .where("i = ? ", newValuedManga.getI())
+                .execute();
+        return this;
     }
 }

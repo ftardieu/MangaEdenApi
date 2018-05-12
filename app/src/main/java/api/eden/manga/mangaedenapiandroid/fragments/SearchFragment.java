@@ -85,6 +85,7 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
             mAlreadyLoaded = true;
             Manga manga = new Manga();
             mangaList = manga.getMangas();
+            Log.d("JEREMYTEST", String.valueOf(mangaList.size()));
             mAdapter = new MangasAdapter(getActivity(), mangaList , mangaList ,this , profile);
             mAdapter.notifyDataSetChanged();
         }else{

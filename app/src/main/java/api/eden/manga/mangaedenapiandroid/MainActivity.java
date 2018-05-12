@@ -1,8 +1,14 @@
 package api.eden.manga.mangaedenapiandroid;
 
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Application;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
-import android.opengl.Visibility;
+import android.icu.util.Calendar;
+import android.icu.util.GregorianCalendar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,29 +16,36 @@ import android.support.design.widget.BottomNavigationView;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.activeandroid.ActiveAndroid;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import api.eden.manga.mangaedenapiandroid.adapter.MangasAdapter;
-import api.eden.manga.mangaedenapiandroid.fragments.DialogClassFragment;
 import api.eden.manga.mangaedenapiandroid.fragments.HomeFragment;
-import api.eden.manga.mangaedenapiandroid.fragments.MangaFragment;
+import api.eden.manga.mangaedenapiandroid.fragments.LoadingFragment;
 import api.eden.manga.mangaedenapiandroid.fragments.SearchFragment;
 import api.eden.manga.mangaedenapiandroid.interfaces.MangaEden;
 import api.eden.manga.mangaedenapiandroid.model.Manga;
-import api.eden.manga.mangaedenapiandroid.model.Profile;
 import api.eden.manga.mangaedenapiandroid.model.Response;
 import api.eden.manga.mangaedenapiandroid.utils.ApiUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
+
+import static com.activeandroid.Cache.getContext;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,12 +82,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         Log.d("mainActivity", "mainAcivity");
-        LinearLayout linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
+        LinearLayout linlaHeaderProgress = (LinearLayout) findViewById(R.id.loadingLayout);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         linlaHeaderProgress.setVisibility(View.VISIBLE);
-
 
         loadDatas(linlaHeaderProgress);
        // AsyncTask asyncCaller =  new AsyncCaller(linlaHeaderProgress).execute();
@@ -91,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showFragment(Fragment fragment , Boolean addToBackStack ) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.animator.enter_from_left,R.animator.exit_to_right);
         transaction.replace(R.id.content, fragment);
         if (addToBackStack) {
             transaction.addToBackStack(null);
@@ -98,37 +111,85 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    private class AsyncCaller extends AsyncTask<Void, Void, Void>
+    public class AsyncCaller extends AsyncTask<Void, Integer, Void>
     {
         public List<Manga> myList ;
         public LinearLayout linlaHeaderProgress ;
+        public ProgressBar progressBar;
         public AsyncCaller (List <Manga> myList , LinearLayout linlaHeaderProgress){
             super();
-            this.myList = myList ;
+            this.myList = myList;
             this.linlaHeaderProgress = linlaHeaderProgress;
+        }
+
+        public AsyncCaller setProgressBar(ProgressBar progressBar) {
+            this.progressBar = progressBar;
+            return this;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Log.d("jeremy", "insert");
+            Log.d("JEREMY-START","Starting insert");
+            Manga mangaDB = new Manga();
+            List<Manga> mangaList = mangaDB.getMangas();
+            List<String> mangaIds = new ArrayList<>();
+
+            for(Manga dbManga: mangaList) {
+                mangaIds.add(dbManga.getI());
+            }
+            Log.d("JEREMY-MANGALIST",String.valueOf(mangaList.size()));
+
+            showFragment(new LoadingFragment() , false);
+
+            int i = 0;
+            int j = 0;
+            int percent = 0;
+            int listSize = myList.size();
+            Log.d("JEREMY-MYLIST",String.valueOf(myList.size()));
+
+            Calendar c = new GregorianCalendar();
+            c.set(Calendar.HOUR_OF_DAY, 0);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
+            c.set(Calendar.MILLISECOND, 0);
+
+            publishProgress((int) 0);
             ActiveAndroid.beginTransaction();
-            int i = 0 ;
-            for (Manga manga : myList ){
-                manga.save();
+            for (Manga newManga : myList ){
+                if(!mangaIds.contains(newManga.getI())) {
+                    newManga.save();
+                    i++;
+                } else {
+
+                    if(newManga.getLd() >= c.getTimeInMillis()) {
+                        mangaDB.updateManga(newManga);
+                        i++;
+                    }
+
+                }
 
                 if (i == 100 ) {
+                    percent = (j * 100 / listSize);
+                    publishProgress((int) (percent));
                     ActiveAndroid.setTransactionSuccessful();
                     ActiveAndroid.endTransaction();
+                    Log.d("JEREMY-TRANSACTION","100 rows added");
                     i = 0;
                     ActiveAndroid.beginTransaction();
                 }
-                i++;
-
+                j++;
             }
 
             ActiveAndroid.setTransactionSuccessful();
             ActiveAndroid.endTransaction();
+            Log.d("JEREMY-END","Ending insert");
             return null;
+        }
+
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Log.d("JEREMY-PROGRESS",String.valueOf(values[0]));
+            this.progressBar.setProgress(values[0]);
         }
 
 
@@ -140,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadDatas(final LinearLayout linlaHeaderProgress){
-        Log.d("LoadDatas" , "LoadDatas");
         mEden = ApiUtils.getService();
         mEden.getResponse().enqueue(new Callback<Response>() {
 
@@ -153,8 +213,8 @@ public class MainActivity extends AppCompatActivity {
 
                     List<Manga> myList = response.body().getManga();
 
-                     AsyncTask asyncCaller =  new AsyncCaller(myList, linlaHeaderProgress).execute();
-
+                        ProgressBar progressBar = (ProgressBar) findViewById(R.id.loadingMangaBar);
+                     AsyncTask asyncCaller =  new AsyncCaller(myList, linlaHeaderProgress).setProgressBar(progressBar).execute();
                 }else {
                     int statusCode  = response.code();
                     Log.d("MainActivity", Integer.toString(statusCode));
