@@ -1,5 +1,4 @@
 package api.eden.manga.mangaedenapiandroid.Manager;
-
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -21,6 +20,8 @@ public class MangaManager {
 
     private List<Chapter> listChapters;
     private Application app = new Application();
+
+
     public void loadMangaDetail(final FavoritesManga fManga , final FavoritesAdapter adapter){
         MangaEden mEden = app.getMangaEden();
         mEden.getMangaDetail(fManga.getManga_id()).enqueue(new Callback<MangaDetail>() {
@@ -30,36 +31,51 @@ public class MangaManager {
                 if (response.isSuccessful()){
                     List<List<String>> listChapter = response.body().getChapters();
                     listChapters = new ArrayList<>();
+                    Integer max =null;
                     for (List<String> chapter : listChapter){
                         String dc = chapter.get(1).replaceAll("[\\D]","");
                         dc = dc.substring(0, dc.length() -1 );
                         Long dateChapter = Long.parseLong(dc);
-                        Chapter c = new Chapter(Double.parseDouble(chapter.get(0)) , dateChapter, chapter.get(2) , chapter.get(3) );
-                        listChapters.add(c);
+                        Double d =  Double.parseDouble(chapter.get(0));
+                        if (max == null){
+                            max = d.intValue();
+                        }
+
+                        if (!chapter.get(0).contains(".")){
+                            Chapter c = new Chapter(d.intValue() , dateChapter, chapter.get(2) , chapter.get(3) );
+                            listChapters.add(c);
+                        }
                     }
                     Chapter nextChapter  = new Chapter();
+                   if (!max.equals(fManga.getNext_chapter_num())){
+                       for (Chapter chap : listChapters){
+                           if (  nextChapter != null && fManga.getLast_page_read() > 10 && Double.compare(chap.getNum_chapter() , fManga.getNext_chapter_num()) == 0)
+                           {
+                               fManga.setLast_chapter_read(fManga.getNext_chapter_num());
 
-                    for (Chapter chap : listChapters){
-                        if (  fManga.getLast_chapter_read() != null && Double.compare(chap.getNum_chapter() , fManga.getLast_chapter_read()) == 0){
-                            fManga.setNext_chapter_id(nextChapter.getId_chapter());
-                            fManga.setNext_chapter_num(nextChapter.getNum_chapter());
-                            fManga.setNext_chapter_time(nextChapter.getDate_chapter());
-                            fManga.setNext_chapter_title(nextChapter.getName_chapter());
-                            fManga.save();
-                            break;
-                        }
-                        nextChapter = chap;
-                    }
 
-                    if (fManga.getNext_chapter_time() == null){
+                               fManga.setNext_chapter_id(nextChapter.getId_chapter());
+                               fManga.setNext_chapter_num(nextChapter.getNum_chapter());
+                               fManga.setNext_chapter_time(nextChapter.getDate_chapter());
+                               fManga.setNext_chapter_title(nextChapter.getName_chapter());
+                               fManga.save();
+                               break;
+                           }
+                           nextChapter = chap;
+                       }
+                   }
+
+
+                    if (fManga.getNext_chapter_time() == null)
+                    {
                         fManga.setNext_chapter_id(nextChapter.getId_chapter());
                         fManga.setNext_chapter_num(nextChapter.getNum_chapter());
                         fManga.setNext_chapter_time(nextChapter.getDate_chapter());
                         fManga.setNext_chapter_title(nextChapter.getName_chapter());
                         fManga.save();
                     }
-                    //adapter.notifyItemInserted(adapter.getItemCount());
                     adapter.notifyDataSetChanged();
+
                 }else {
                     int statusCode  = response.code();
                     Log.d("MainActivity", Integer.toString(statusCode));
@@ -96,7 +112,7 @@ public class MangaManager {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
         }
     }
 
@@ -110,5 +126,6 @@ public class MangaManager {
         }
     }
 
-    // il faut faire des events / listener
+
+
 }

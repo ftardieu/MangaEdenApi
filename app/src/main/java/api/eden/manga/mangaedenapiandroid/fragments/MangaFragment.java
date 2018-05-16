@@ -3,9 +3,14 @@ package api.eden.manga.mangaedenapiandroid.fragments;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +23,7 @@ import api.eden.manga.mangaedenapiandroid.model.Manga;
 public class MangaFragment extends Fragment {
 
     private TextView test;
+    private Button nextManga;
 
     public MangaFragment() {
         // Required empty public constructor
@@ -31,7 +37,7 @@ public class MangaFragment extends Fragment {
         test = (TextView) view.findViewById(R.id.textView2);
         getActivity().setTitle(getArguments().getString("manga_title")) ;
         test.setText(getArguments().getString("manga_id"));
-
+        setHasOptionsMenu(true);
         return view;
     }
 

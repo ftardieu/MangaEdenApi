@@ -11,7 +11,8 @@ public class Chapter extends Model{
 
     @Column(name = "num_chapter")
     @Expose
-    public Double num_chapter;
+    public Integer num_chapter;
+
     @Column(name = "date_chapter")
     @Expose
     public Long date_chapter;
@@ -26,15 +27,15 @@ public class Chapter extends Model{
 
     }
 
-    public Double getNum_chapter() {
+    public Integer getNum_chapter() {
         return num_chapter;
     }
 
-    public void setNum_chapter(Double num_chapter) {
+    public void setNum_chapter(Integer num_chapter) {
         this.num_chapter = num_chapter;
     }
 
-    public Chapter(Double num_chapter, Long date_chapter, String name_chapter, String id_chapter) {
+    public Chapter(Integer num_chapter, Long date_chapter, String name_chapter, String id_chapter) {
         this.num_chapter = num_chapter;
         this.date_chapter = date_chapter;
         this.name_chapter = name_chapter;

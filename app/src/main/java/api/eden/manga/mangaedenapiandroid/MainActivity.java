@@ -1,6 +1,7 @@
 package api.eden.manga.mangaedenapiandroid;
 
 
+import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
@@ -45,8 +46,6 @@ import api.eden.manga.mangaedenapiandroid.utils.ApiUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-import static com.activeandroid.Cache.getContext;
-
 public class MainActivity extends AppCompatActivity {
 
 
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                     showFragment(new HomeFragment() , false );
                     return true;
                 case R.id.navigation_search:
-                    Log.d("test", "test");
                     showFragment(new SearchFragment() , false );
                     return true;
             }
@@ -81,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        Log.d("mainActivity", "mainAcivity");
         LinearLayout linlaHeaderProgress = (LinearLayout) findViewById(R.id.loadingLayout);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -98,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("onActivityResult" , "test");
     }
 
     private void showFragment(Fragment fragment , Boolean addToBackStack ) {
@@ -113,10 +109,10 @@ public class MainActivity extends AppCompatActivity {
 
     public class AsyncCaller extends AsyncTask<Void, Integer, Void>
     {
-        public List<Manga> myList ;
-        public LinearLayout linlaHeaderProgress ;
-        public ProgressBar progressBar;
-        public AsyncCaller (List <Manga> myList , LinearLayout linlaHeaderProgress){
+         List<Manga> myList ;
+         LinearLayout linlaHeaderProgress ;
+         ProgressBar progressBar;
+         AsyncCaller (List <Manga> myList , LinearLayout linlaHeaderProgress){
             super();
             this.myList = myList;
             this.linlaHeaderProgress = linlaHeaderProgress;
@@ -129,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Log.d("JEREMY-START","Starting insert");
             Manga mangaDB = new Manga();
             List<Manga> mangaList = mangaDB.getMangas();
             List<String> mangaIds = new ArrayList<>();
@@ -137,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
             for(Manga dbManga: mangaList) {
                 mangaIds.add(dbManga.getI());
             }
-            Log.d("JEREMY-MANGALIST",String.valueOf(mangaList.size()));
 
             showFragment(new LoadingFragment() , false);
 
@@ -145,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
             int j = 0;
             int percent = 0;
             int listSize = myList.size();
-            Log.d("JEREMY-MYLIST",String.valueOf(myList.size()));
 
             Calendar c = new GregorianCalendar();
             c.set(Calendar.HOUR_OF_DAY, 0);
@@ -173,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
                     publishProgress((int) (percent));
                     ActiveAndroid.setTransactionSuccessful();
                     ActiveAndroid.endTransaction();
-                    Log.d("JEREMY-TRANSACTION","100 rows added");
                     i = 0;
                     ActiveAndroid.beginTransaction();
                 }
@@ -182,13 +174,11 @@ public class MainActivity extends AppCompatActivity {
 
             ActiveAndroid.setTransactionSuccessful();
             ActiveAndroid.endTransaction();
-            Log.d("JEREMY-END","Ending insert");
             return null;
         }
 
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            Log.d("JEREMY-PROGRESS",String.valueOf(values[0]));
             this.progressBar.setProgress(values[0]);
         }
 
@@ -213,11 +203,10 @@ public class MainActivity extends AppCompatActivity {
 
                     List<Manga> myList = response.body().getManga();
 
-                        ProgressBar progressBar = (ProgressBar) findViewById(R.id.loadingMangaBar);
-                     AsyncTask asyncCaller =  new AsyncCaller(myList, linlaHeaderProgress).setProgressBar(progressBar).execute();
+                    ProgressBar progressBar = (ProgressBar) findViewById(R.id.loadingMangaBar);
+                    AsyncTask asyncCaller =  new AsyncCaller(myList, linlaHeaderProgress).setProgressBar(progressBar).execute();
                 }else {
                     int statusCode  = response.code();
-                    Log.d("MainActivity", Integer.toString(statusCode));
                     // handle request errors depending on status code
                 }
 

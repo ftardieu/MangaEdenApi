@@ -18,7 +18,7 @@ public class FavoritesManga extends Model{
 
 
     @Column(name = "last_chapter_read")
-    public Double last_chapter_read;
+    public Integer last_chapter_read;
 
     @Column(name = "last_chapter_started")
     public String last_chapter_started;
@@ -41,13 +41,13 @@ public class FavoritesManga extends Model{
     public String manga_alias;
 
     @Column(name = "next_chapter_num")
-    public Double next_chapter_num = 0.0 ;
+    public Integer next_chapter_num = 0 ;
 
-    public Double getNext_chapter_num() {
+    public Integer getNext_chapter_num() {
         return next_chapter_num;
     }
 
-    public void setNext_chapter_num(Double next_chapter_num) {
+    public void setNext_chapter_num(Integer next_chapter_num) {
         this.next_chapter_num = next_chapter_num;
     }
 
@@ -106,11 +106,11 @@ public class FavoritesManga extends Model{
         this.last_read_at = last_read_at;
     }
 
-    public Double getLast_chapter_read() {
+    public Integer getLast_chapter_read() {
         return last_chapter_read;
     }
 
-    public void setLast_chapter_read(Double last_chapter_read) {
+    public void setLast_chapter_read(Integer last_chapter_read) {
         this.last_chapter_read = last_chapter_read;
     }
 
@@ -150,7 +150,7 @@ public class FavoritesManga extends Model{
         super();
     }
 
-    public FavoritesManga( Long last_read_at , Double last_chapter_read , String last_chapter_started , Integer last_page_read , String manga_id , String profile_pseudo , Boolean is_favorite) {
+    public FavoritesManga( Long last_read_at , Integer last_chapter_read , String last_chapter_started , Integer last_page_read , String manga_id , String profile_pseudo , Boolean is_favorite) {
         super();
         this.last_chapter_read = last_chapter_read;
         this.last_chapter_started = last_chapter_started;
@@ -170,13 +170,7 @@ public class FavoritesManga extends Model{
         this.is_favorite = is_favorite;
     }
 
-    public static FavoritesManga getFavoriteManga(Manga manga , Profile profile) {
-        return new Select()
-                .from(FavoritesManga.class)
-                .where("manga_id = ?", manga.getI())
-                .and("profile_pseudo = ?" , profile.getPseudo())
-                .executeSingle();
-    }
+
 
     public List<FavoritesManga> getFavoritesMangas(Profile profile) {
         return new Select()
@@ -190,6 +184,14 @@ public class FavoritesManga extends Model{
         return new Select()
                 .from(FavoritesManga.class)
                 .where("manga_id = ?", manga.getI())
+                .and("profile_pseudo = ?" , profile.getPseudo())
+                .executeSingle();
+    }
+
+    public static FavoritesManga getFavoriteManga(String manga_id , Profile profile){
+        return new Select()
+                .from(FavoritesManga.class)
+                .where("manga_id = ?", manga_id)
                 .and("profile_pseudo = ?" , profile.getPseudo())
                 .executeSingle();
     }

@@ -2,15 +2,15 @@ package api.eden.manga.mangaedenapiandroid.adapter;
 
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
+import api.eden.manga.mangaedenapiandroid.TouchImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 
@@ -24,6 +24,7 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
     LayoutInflater layoutInflater;
 
     ArrayList<String> arrayList;
+
 
 
 
@@ -43,20 +44,18 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((LinearLayout) object);
+        return view == ((RelativeLayout) object);
     }
 
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-
         View itemView = layoutInflater.inflate(R.layout.view_pager_item, container, false);
 
-        ImageView imageView = (ImageView) itemView.findViewById(R.id.viewPagerItem_image1);
+        TouchImageView img = (TouchImageView) itemView.findViewById(R.id.viewPagerItem_image1);
         String image = arrayList.get(position);
-        Glide.with(context)
-                .load("https://cdn.mangaeden.com/mangasimg/" + image)
-                .into(imageView);
+        String url = "https://cdn.mangaeden.com/mangasimg/" + image;
+        Glide.with(context).load(url).into(img);
 
         container.addView(itemView);
 
@@ -64,7 +63,14 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
     }
 
     @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
+    }
+
+
+
+    @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((LinearLayout) object);
+        container.removeView((RelativeLayout) object);
     }
 }

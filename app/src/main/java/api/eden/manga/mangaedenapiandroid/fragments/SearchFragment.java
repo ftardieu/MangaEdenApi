@@ -1,15 +1,10 @@
 package api.eden.manga.mangaedenapiandroid.fragments;
 
 import android.app.FragmentTransaction;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,15 +15,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import api.eden.manga.mangaedenapiandroid.MainActivity;
 import api.eden.manga.mangaedenapiandroid.R;
 import api.eden.manga.mangaedenapiandroid.adapter.MangasAdapter;
 import api.eden.manga.mangaedenapiandroid.model.FavoritesManga;
@@ -78,6 +69,9 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         setHasOptionsMenu(true);
+        BottomNavigationView navigation =  getActivity().findViewById(R.id.navigation);
+        navigation.setVisibility(View.VISIBLE);
+
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),3);
         recyclerView.setLayoutManager(mLayoutManager);
         myfavoritesButton = (ToggleButton) view.findViewById(R.id.myfavoritesButton);
@@ -85,7 +79,6 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
             mAlreadyLoaded = true;
             Manga manga = new Manga();
             mangaList = manga.getMangas();
-            Log.d("JEREMYTEST", String.valueOf(mangaList.size()));
             mAdapter = new MangasAdapter(getActivity(), mangaList , mangaList ,this , profile);
             mAdapter.notifyDataSetChanged();
         }else{
@@ -146,7 +139,6 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putCharSequence("manga_search" , searchView.getQuery().toString());
-        Log.d("State" , "saveInstance");
 
 
     }
@@ -175,20 +167,20 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
          // Date currentTime = Calendar.getInstance().getTime();
 
         FavoritesManga favoritesManga = new FavoritesManga();
-        favoritesManga = favoritesManga.getFavoriteManga(manga, profile);
+        favoritesManga = favoritesManga.getIsFavoriteManga(manga, profile);
         if (isChecked) {
             if (favoritesManga == null){
                 favoritesManga = new FavoritesManga();
                 favoritesManga.setFavorite(true);
                 favoritesManga.setLast_chapter_read(null);
-                favoritesManga.setNext_chapter_num(0.0);
+                favoritesManga.setNext_chapter_num(0);
                 favoritesManga.setLast_chapter_started(null);
                 favoritesManga.setLast_page_read(0);
                 favoritesManga.setLast_read_at(null);
                 favoritesManga.setManga_id(manga.getI());
                 favoritesManga.setProfile_pseudo(profile.getPseudo());
                 favoritesManga.setManga_alias(manga.getT());
-                favoritesManga.setNext_chapter_num(0.0);
+                favoritesManga.setNext_chapter_num(0);
 
 
             }else{
