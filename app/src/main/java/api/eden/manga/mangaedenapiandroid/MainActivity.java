@@ -78,14 +78,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        LinearLayout linlaHeaderProgress = (LinearLayout) findViewById(R.id.loadingLayout);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
 
-        loadDatas(linlaHeaderProgress);
+        showFragment(new HomeFragment() , false);
+        //linlaHeaderProgress.setVisibility(View.VISIBLE);
+
+        //loadDatas(linlaHeaderProgress);
        // AsyncTask asyncCaller =  new AsyncCaller(linlaHeaderProgress).execute();
 
 
@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void showFragment(Fragment fragment , Boolean addToBackStack ) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.animator.enter_from_left,R.animator.exit_to_right);
         transaction.replace(R.id.content, fragment);
         if (addToBackStack) {
             transaction.addToBackStack(null);

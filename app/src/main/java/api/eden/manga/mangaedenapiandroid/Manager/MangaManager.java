@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import api.eden.manga.mangaedenapiandroid.adapter.FavoritesAdapter;
-import api.eden.manga.mangaedenapiandroid.adapter.MangasAdapter;
 import api.eden.manga.mangaedenapiandroid.interfaces.MangaEden;
 import api.eden.manga.mangaedenapiandroid.model.Chapter;
 import api.eden.manga.mangaedenapiandroid.model.FavoritesManga;
@@ -20,9 +19,10 @@ public class MangaManager {
 
     private List<Chapter> listChapters;
     private Application app = new Application();
+    private  MangaDetail mangaDetail = new MangaDetail() ;
 
 
-    public void loadMangaDetail(final FavoritesManga fManga , final FavoritesAdapter adapter){
+    public void loadMangaChapterDetail(final FavoritesManga fManga , final FavoritesAdapter adapter){
         MangaEden mEden = app.getMangaEden();
         mEden.getMangaDetail(fManga.getManga_id()).enqueue(new Callback<MangaDetail>() {
 
@@ -78,16 +78,14 @@ public class MangaManager {
 
                 }else {
                     int statusCode  = response.code();
-                    Log.d("MainActivity", Integer.toString(statusCode));
-                    Log.d("MainActivity", response.toString());
+                    Log.d("mangaDetailChapter", Integer.toString(statusCode));
 
                 }
             }
 
             @Override
             public void onFailure(Call<MangaDetail> call, Throwable t) {
-                Log.d("HomeFragment", "Error loading datas home");
-                Log.d("HomeFragment", t.getMessage());
+                Log.d("mangaDetailChapter", t.getMessage());
             }
         });
     }
@@ -105,7 +103,7 @@ public class MangaManager {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            loadMangaDetail(fmanga ,adapter);
+            loadMangaChapterDetail(fmanga ,adapter);
             return null;
         }
 
@@ -125,6 +123,8 @@ public class MangaManager {
             }
         }
     }
+
+
 
 
 

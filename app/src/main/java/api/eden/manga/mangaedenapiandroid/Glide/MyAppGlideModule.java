@@ -1,4 +1,4 @@
-package api.eden.manga.mangaedenapiandroid;
+package api.eden.manga.mangaedenapiandroid.Glide;
 
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;

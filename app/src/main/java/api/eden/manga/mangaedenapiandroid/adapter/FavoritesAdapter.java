@@ -1,5 +1,6 @@
 package api.eden.manga.mangaedenapiandroid.adapter;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import api.eden.manga.mangaedenapiandroid.R;
 import api.eden.manga.mangaedenapiandroid.model.FavoritesManga;
@@ -83,10 +85,14 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
 
     }
 
-    private String getTimeEllasped(FavoritesManga favoritesManga){
+   /* private String getTimeEllasped(FavoritesManga favoritesManga){
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis()/1000);
         Long ts = timestamp.getTime();
+
+
+
+
         long timeEllasped = ts - favoritesManga.getNext_chapter_time() ;
         long getMinuts = timeEllasped / 60 ;
         long getHours = 0 ;
@@ -149,6 +155,48 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
 
 
         return result.toString();
+    }*/
+
+    private String getTimeEllasped(FavoritesManga favoritesManga){
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Long ts = timestamp.getTime();
+
+        long millis = ts - favoritesManga.getNext_chapter_time() * 1000 ;
+
+        if(millis < 0) {
+            throw new IllegalArgumentException("Duration must be greater than zero!");
+        }
+
+
+
+
+
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        millis -= TimeUnit.DAYS.toMillis(days);
+        long weeks = days / 7;
+        StringBuilder sb = new StringBuilder(64);
+        if (weeks > 4 ){
+            sb.append("Long time ago");
+        }else{
+            days = days  % 7 ;
+            long hours = TimeUnit.MILLISECONDS.toHours(millis);
+            millis -= TimeUnit.HOURS.toMillis(hours);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+
+            sb.append(weeks);
+            sb.append(" weeks");
+            sb.append(days);
+            sb.append(" Days ");
+            sb.append(hours);
+            sb.append(" Hours ");
+            sb.append(minutes);
+            sb.append(" Minutes ");
+
+        }
+
+
+        return(sb.toString());
     }
 
     public interface FavoritesAdapterListener {

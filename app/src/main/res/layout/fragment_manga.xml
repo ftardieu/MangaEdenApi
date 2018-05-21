@@ -1,15 +1,146 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragments.SearchFragment">
 
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="TextView" />
-</RelativeLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_width="0dp">
+
+
+                <ImageView
+                    android:id="@+id/mangaImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="300dp"
+
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/mangaTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:padding="2dp"
+                    android:textAlignment="center"
+                    android:textColor="#696969" />
+
+                <TextView
+                    android:id="@+id/mangaAuthor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:padding="2dp"
+                    android:textAlignment="center"
+                    android:textColor="#696969" />
+
+
+                <TextView
+                    android:id="@+id/mangaStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:textSize="14sp"
+                    android:textStyle="italic"
+                    android:textAlignment="center"
+                    android:textColor="#696969" />
+
+
+                <TextView
+                    android:id="@+id/mangaCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="#696969" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textSize="11dp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:text="Last update : "
+                    />
+
+                <TextView
+                    android:id="@+id/mangaLastUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:textAlignment="center"
+                    android:textColor="#FF0000" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="11dp"
+                    android:textStyle="bold"
+                    android:text="Chapter list :"  />
+
+
+                <api.eden.manga.mangaedenapiandroid.CustomClass.MySpinner
+                    android:id="@+id/spinner1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+
+                    android:background="@drawable/spinnercustomer"  />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:text="Description : "
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/mangaDescription"
+                android:paddingTop="10dp"
+                android:textSize="14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
+</LinearLayout>
+
+</ScrollView>
+

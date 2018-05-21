@@ -1,6 +1,7 @@
 package api.eden.manga.mangaedenapiandroid.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +29,7 @@ import api.eden.manga.mangaedenapiandroid.model.Manga;
 import api.eden.manga.mangaedenapiandroid.model.Profile;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 
 public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHolder> implements Filterable {
@@ -105,11 +109,21 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
             holder.myfavoritesButton.setBackgroundDrawable(ContextCompat.getDrawable(context , R.drawable.ic_star_empty));
         }
 
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.drawable.error)
+                .error(R.drawable.error);
+
+        String image = "https://cdn.mangaeden.com/mangasimg/" + manga.getIm();
+        if (manga.getIm() == null ){
+            image = "https://cdn.mangaeden.com/images/no_image.svg";
+        }
+
         Glide.with(context)
-                .load("https://cdn.mangaeden.com/mangasimg/" + manga.getIm())
+                .load(image)
+                .apply(options)
                 .into(holder.thumbnail);
 
-    }
+        }
 
     @Override
     public int getItemCount() {
@@ -159,4 +173,6 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
     public interface MangasAdapterListener {
         void onMangaSelected(Manga manga);
     }
+
+
 }

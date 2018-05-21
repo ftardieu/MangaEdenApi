@@ -60,11 +60,6 @@ public class FavoritesManga extends Model{
     @Column(name = "next_chapter_time")
     public Long next_chapter_time;
 
-    public Boolean getIs_favorite() {
-        return is_favorite;
-    }
-
-
 
     public String getManga_alias() {
         return manga_alias;

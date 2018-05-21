@@ -17,26 +17,7 @@
 
         />
 
-    <LinearLayout
-        android:id="@+id/loadingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
 
-        <ProgressBar
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:id="@+id/loadingMangaBar"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content" >
-        </ProgressBar>
-        <TextView
-            android:id="@+id/loadingMangaLabel"
-            android:gravity="center_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Les mangas vont être chargés" />
-    </LinearLayout>
 
 
     <android.support.design.widget.BottomNavigationView

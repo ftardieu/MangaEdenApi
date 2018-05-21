@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">MangaEdenApiAndroid</string>
-    <string name="title_home">Home</string>
-    <string name="title_search">Search</string>
+    <string name="title_home">Favorites</string>
+    <string name="title_search">Manga list</string>
     <string name="title_notifications">Notifications</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Type name…</string>
+    <string name="country_prompt">Chapters list</string>
 </resources>

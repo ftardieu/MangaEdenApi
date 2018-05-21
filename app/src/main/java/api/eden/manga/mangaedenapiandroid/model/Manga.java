@@ -79,6 +79,7 @@ public class Manga extends Model
     public Manga(){
         super();
     }
+
     public Manga (String title ,  Integer status , double ld , String im , String i , Integer h , String a){
         super ();
         this.t = title;

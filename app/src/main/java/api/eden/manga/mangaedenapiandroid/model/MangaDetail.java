@@ -1,8 +1,6 @@
 package api.eden.manga.mangaedenapiandroid.model;
 
-import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
-import com.activeandroid.query.Select;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -70,7 +68,7 @@ public class MangaDetail{
     private Integer language;
     @SerializedName("last_chapter_date")
     @Expose
-    private Double lastChapterDate;
+    private String lastChapterDate;
     @SerializedName("random")
     @Expose
     private List<Double> random = null;
@@ -232,11 +230,11 @@ public class MangaDetail{
         this.language = language;
     }
 
-    public Double getLastChapterDate() {
+    public String getLastChapterDate() {
         return lastChapterDate;
     }
 
-    public void setLastChapterDate(Double lastChapterDate) {
+    public void setLastChapterDate(String lastChapterDate) {
         this.lastChapterDate = lastChapterDate;
     }
 

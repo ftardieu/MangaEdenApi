@@ -1,5 +1,8 @@
 package api.eden.manga.mangaedenapiandroid.fragments;
 
+
+
+import api.eden.manga.mangaedenapiandroid.application.Application;
 import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -18,19 +21,31 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import api.eden.manga.mangaedenapiandroid.MainActivity;
 import api.eden.manga.mangaedenapiandroid.R;
 import api.eden.manga.mangaedenapiandroid.adapter.MangasAdapter;
+import api.eden.manga.mangaedenapiandroid.interfaces.MangaEden;
 import api.eden.manga.mangaedenapiandroid.model.FavoritesManga;
 import api.eden.manga.mangaedenapiandroid.model.Manga;
 import api.eden.manga.mangaedenapiandroid.model.Profile;
+import api.eden.manga.mangaedenapiandroid.model.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 public class SearchFragment extends Fragment  implements MangasAdapter.MangasAdapterListener{
 
     private RecyclerView recyclerView;
-    private List<Manga> mangaList;
+    private List<Manga> mangaList  = new ArrayList<>();
+
+    private Application app = new Application();
+
+    private MangaEden mEden;
     private MangasAdapter mAdapter;
     private SearchView searchView;
     private ToggleButton myfavoritesButton;
@@ -66,6 +81,7 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
         Log.d("search" , "searchFragment");
         Profile profile = new Profile();
         profile = profile.getProfile();
+
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         setHasOptionsMenu(true);
@@ -75,12 +91,18 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(),3);
         recyclerView.setLayoutManager(mLayoutManager);
         myfavoritesButton = (ToggleButton) view.findViewById(R.id.myfavoritesButton);
+
         if (savedInstanceState == null && !mAlreadyLoaded) {
             mAlreadyLoaded = true;
-            Manga manga = new Manga();
-            mangaList = manga.getMangas();
+            //Manga manga = new Manga();
+            //mangaList = manga.getMangas();
+
+            //On parse l'api
+
             mAdapter = new MangasAdapter(getActivity(), mangaList , mangaList ,this , profile);
-            mAdapter.notifyDataSetChanged();
+
+            loadMangaList(mangaList , mAdapter);
+
         }else{
             mAdapter = new MangasAdapter(getActivity(),mangaList ,mAdapter.getMangaListFiltered() ,this , profile);
             getActivity().setTitle("MangaEden") ;
@@ -150,7 +172,6 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
         MangaFragment mangaFragment = new MangaFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         Bundle bundle = new Bundle();
-        bundle.putString("manga_title"  ,manga.getT());
         bundle.putString("manga_id"  ,manga.getI());
         mangaFragment.setArguments(bundle);
         transaction.replace(R.id.content, mangaFragment);
@@ -197,5 +218,49 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
 
         return favoritesManga;
     }
+
+
+
+     private void  loadMangaList(final List<Manga> mangaList , final MangasAdapter mAdapter)
+     {
+         mEden = app.getMangaEden();
+         Log.d("test" , "test");
+         mEden.getResponse().enqueue(new Callback<Response>() {
+
+
+
+             @Override
+             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+
+                 if(response.isSuccessful()) {
+
+                     mangaList.addAll(response.body().getManga());
+                     Collections.sort(mangaList, new Comparator<Manga>() {
+                         @Override
+                         public int compare(Manga a1, Manga a2) {
+                             return a2.getH() - a1.getH();
+                         }
+                     });
+                     //Collections.reverse(mangaList);
+                     mAdapter.notifyDataSetChanged();
+
+                 }else {
+                     int statusCode  = response.code();
+                     // handle request errors depending on status code
+                 }
+
+             }
+
+             @Override
+             public void onFailure(Call<Response> call, Throwable t) {
+                 Log.d("MainActivity", "error loading from API");
+             }
+
+
+
+
+         });
+    }
+
 
 }

@@ -5,14 +5,14 @@
 
     <item
         android:id="@+id/action_back"
-        android:icon="@drawable/ic_baseline_navigate_before_24px"
+        android:icon="@drawable/ic_before"
         android:title="Before"
         android:visible="false"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_next"
-        android:icon="@drawable/ic_baseline_navigate_next_24px"
+        android:icon="@drawable/ic_next"
         android:title="Next"
         app:showAsAction="ifRoom"/>
 
