@@ -105,7 +105,7 @@
                     android:text="Chapter list :"  />
 
 
-                <api.eden.manga.mangaedenapiandroid.CustomClass.MySpinner
+                <api.eden.manga.mangaedenapiandroid.customClass.MySpinner
                     android:id="@+id/spinner1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

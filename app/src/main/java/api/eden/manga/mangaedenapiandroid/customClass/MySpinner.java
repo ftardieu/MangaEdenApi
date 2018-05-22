@@ -1,11 +1,8 @@
-package api.eden.manga.mangaedenapiandroid.CustomClass;
+package api.eden.manga.mangaedenapiandroid.customClass;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.Spinner;
-
-import java.lang.reflect.Field;
 
 public class MySpinner extends Spinner {
     public MySpinner(Context context)

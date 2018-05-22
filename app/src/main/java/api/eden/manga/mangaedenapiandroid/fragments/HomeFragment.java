@@ -2,6 +2,7 @@ package api.eden.manga.mangaedenapiandroid.fragments;
 
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
@@ -49,6 +50,8 @@ public class HomeFragment extends Fragment implements FavoritesAdapter.Favorites
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = view.findViewById(R.id.listFavorites);
+        FragmentManager fragmentManager = getChildFragmentManager();
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         setHasOptionsMenu(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);

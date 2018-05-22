@@ -85,77 +85,6 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
 
     }
 
-   /* private String getTimeEllasped(FavoritesManga favoritesManga){
-
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis()/1000);
-        Long ts = timestamp.getTime();
-
-
-
-
-        long timeEllasped = ts - favoritesManga.getNext_chapter_time() ;
-        long getMinuts = timeEllasped / 60 ;
-        long getHours = 0 ;
-        long getDays = 0 ;
-        long getMonths = 0;
-        long getYears = 0;
-        long getRestMonths = 0 ;
-        long getRestDays = 0 ;
-        long getRestHours = 0 ;
-        long getRestMinuts = 0 ;
-
-        StringBuilder result = new StringBuilder();
-
-        if (getMinuts > 1 ){
-            getHours = getMinuts / 60 ;
-            if (getHours > 1 ) {
-                getDays = getHours / 24 ;
-                if (getDays > 1 ) {
-                    getMonths = getDays / 30 ;
-                    if (getMonths > 1) {
-                        getYears =  getMonths / 12 ;
-                    }
-                }
-            }
-        }
-
-
-        if (getYears != 0){
-            getRestMonths = getDays - getYears * 365 ;
-            result.append(Long.toString(getYears)).append(" year(s) ");
-        }
-
-        if (getMonths != 0){
-            getRestDays = getDays - getYears * 365 ;
-            getRestMonths = getRestDays / 30;
-            result.append(Long.toString(getRestMonths)).append(" month(s) ");
-        }
-
-        if (getDays != 0){
-            getRestDays = getDays - getYears * 365 - getRestMonths * 30;
-            result.append(Long.toString(getRestDays)).append(" day(s) ");
-        }
-
-        Long time = timeEllasped - (getYears * 365*24*3600) - (getRestMonths * 30*24*3600) - ( getRestDays * 24*3600) ;
-        if (getHours != 0){
-            getRestHours = time / 3600  ;
-                    result.append(Long.toString(getRestHours)).append(" hour(s) ");
-                }
-
-        if (getMinuts != 0){
-            getRestMinuts = (time / 3600  - getRestHours) * 60 ;
-            result.append(Long.toString(getRestMinuts)).append(" m ");
-        }
-
-
-        //TODO MINUTES ET SECONDES
-        Long getRest = (time / 3600  - getRestDays * 24 - getRestHours ) * 60 - getRestMinuts ;
-        //result += Long.toString(getRest) + " s" ;
-
-
-
-        return result.toString();
-    }*/
 
     private String getTimeEllasped(FavoritesManga favoritesManga){
 
@@ -185,7 +114,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
             long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
 
             sb.append(weeks);
-            sb.append(" weeks");
+            sb.append(" weeks ");
             sb.append(days);
             sb.append(" Days ");
             sb.append(hours);

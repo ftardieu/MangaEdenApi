@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.media.Image;
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.SearchView;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -132,6 +133,8 @@ public class MangaFragment extends Fragment {
         manga_id = getArguments().getString("manga_id");
         profile = profile.getProfile();
         fManga = fManga.getFavoriteManga(manga_id , profile);
+        BottomNavigationView navigation =  getActivity().findViewById(R.id.navigation);
+        navigation.setVisibility(View.VISIBLE);
 
 
         LoadMangaDetails(manga_id);
@@ -190,14 +193,26 @@ public class MangaFragment extends Fragment {
                     final List<List<String>> listChapter = response.body().getChapters();
                     final List<Chapter> listChapters = new ArrayList<>();
 
-
+                    Integer min = null;
 
                     for (List<String> chapter : listChapter){
                         if (!chapter.get(0).contains(".")){
-
                             Double d =  Double.parseDouble(chapter.get(0));
+                            if (min == null ){
+                                min = d.intValue();
+                            }
+
+                            if (d.intValue() < min ){
+                                min = d.intValue();
+                            }
+
+
+                            String datec = chapter.get(1).replaceAll("[\\D]","");
+                            datec = datec.substring(0, datec.length() -1 );
+                            Long dateChap= Long.parseLong(datec);
+
                             listNumChapter.add(chapter.get(0));
-                            Chapter c = new Chapter(d.intValue() , dateChapter, chapter.get(2) , chapter.get(3) );
+                            Chapter c = new Chapter(d.intValue() , dateChap , chapter.get(2) , chapter.get(3) );
                             listChapters.add(c);
                         }
                     }
@@ -205,13 +220,12 @@ public class MangaFragment extends Fragment {
                     ArrayAdapter<String>adapter = new ArrayAdapter<>(getActivity(),
                             R.layout.my_spinner_custom, listNumChapter);
                     spinner.setAdapter(adapter);
-
-                    if (fManga.getNext_chapter_num() >= 0) {
-                        Log.d("test" , "pastest");
+                    if (fManga != null && fManga.getNext_chapter_num() >= 0) {
 
                         int spinnerPosition = adapter.getPosition(String.valueOf(fManga.getNext_chapter_num()));
-
-                        spinner.setSelection(spinnerPosition);
+                        if (spinnerPosition > min){
+                            spinner.setSelection(spinnerPosition);
+                        }
                     }
                     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -222,9 +236,26 @@ public class MangaFragment extends Fragment {
                                 return;
                             }
                             check = 0;
-
-                            //TODO FAVORITE MANGA UPDATE POUR GARDER LA TRACCE  !!!! 
                             Chapter chap = listChapters.get(position);
+
+                           if (fManga == null ) {
+                               fManga = new FavoritesManga();
+                               fManga.setManga_id(manga_id);
+                               fManga.setManga_alias(mangaDetail.getTitle());
+                               fManga.setProfile_pseudo(profile.getPseudo());
+                               fManga.setFavorite(false);
+                           }
+
+                            if (!fManga.getNext_chapter_num().equals(chap.getNum_chapter())){
+                                fManga.setLast_page_read(0);
+                                fManga.setLast_chapter_read(fManga.getNext_chapter_num());
+                                fManga.setNext_chapter_id(chap.getId_chapter());
+                                fManga.setNext_chapter_num(chap.getNum_chapter());
+                                fManga.setNext_chapter_time(chap.getDate_chapter());
+                                fManga.setNext_chapter_title(chap.getName_chapter());
+                                fManga.save();
+                            }
+
                             ChapterFragment chapterFragment = new ChapterFragment();
                             FragmentTransaction transaction = getFragmentManager().beginTransaction();
                             Bundle bundle = new Bundle();

@@ -5,7 +5,7 @@
 
 
 
-    <api.eden.manga.mangaedenapiandroid.TouchImageView
+    <api.eden.manga.mangaedenapiandroid.customClass.TouchImageView
         android:id="@+id/viewPagerItem_image1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

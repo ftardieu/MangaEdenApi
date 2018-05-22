@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import com.bumptech.glide.request.RequestOptions;
 public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHolder> implements Filterable {
 
     private Context context;
+    private RecyclerView rView;
     private List<Manga> mangaList;
     private List<Manga> mangaListFiltered;
     private MangasAdapterListener listener;
@@ -75,8 +77,9 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
     }
 
 
-    public MangasAdapter(Context context, List<Manga> contactList,  List<Manga> contactListFiltered,  MangasAdapterListener listener , Profile profile) {
+    public MangasAdapter(Context context, List<Manga> contactList,  List<Manga> contactListFiltered,  MangasAdapterListener listener , Profile profile , RecyclerView rView) {
         this.context = context;
+        this.rView = rView;
         this.listener = listener;
         this.mangaList = contactList;
         this.mangaListFiltered = contactListFiltered;
@@ -142,8 +145,6 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
                     List<Manga> filteredList = new ArrayList<>();
                     for (Manga row : mangaList) {
 
-                        // name match condition. this might differ depending on your requirement
-                        // here we are looking for name or phone number match
                         if (row.getT().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
@@ -160,7 +161,7 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 mangaListFiltered = (ArrayList<Manga>) filterResults.values;
-
+                rView.getRecycledViewPool().clear();
                 notifyDataSetChanged();
 
             }
@@ -170,6 +171,7 @@ public class MangasAdapter extends RecyclerView.Adapter<MangasAdapter.MyViewHold
     public List<Manga> getMangaListFiltered(){
         return mangaListFiltered;
     }
+
     public interface MangasAdapterListener {
         void onMangaSelected(Manga manga);
     }

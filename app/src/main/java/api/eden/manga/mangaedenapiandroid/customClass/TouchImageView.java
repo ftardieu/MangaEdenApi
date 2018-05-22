@@ -1,4 +1,4 @@
-package api.eden.manga.mangaedenapiandroid;
+package api.eden.manga.mangaedenapiandroid.customClass;
 
 import android.content.Context;
 import android.graphics.Matrix;

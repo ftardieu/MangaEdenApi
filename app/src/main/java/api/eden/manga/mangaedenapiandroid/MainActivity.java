@@ -1,6 +1,7 @@
 package api.eden.manga.mangaedenapiandroid;
 
 
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -83,13 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         showFragment(new HomeFragment() , false);
-        //linlaHeaderProgress.setVisibility(View.VISIBLE);
-
-        //loadDatas(linlaHeaderProgress);
-       // AsyncTask asyncCaller =  new AsyncCaller(linlaHeaderProgress).execute();
-
-
-
     }
 
     @Override
@@ -100,127 +94,12 @@ public class MainActivity extends AppCompatActivity {
     private void showFragment(Fragment fragment , Boolean addToBackStack ) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.content, fragment);
+        getFragmentManager().popBackStackImmediate();
+
         if (addToBackStack) {
             transaction.addToBackStack(null);
         }
         transaction.commit();
     }
-
-    public class AsyncCaller extends AsyncTask<Void, Integer, Void>
-    {
-         List<Manga> myList ;
-         LinearLayout linlaHeaderProgress ;
-         ProgressBar progressBar;
-         AsyncCaller (List <Manga> myList , LinearLayout linlaHeaderProgress){
-            super();
-            this.myList = myList;
-            this.linlaHeaderProgress = linlaHeaderProgress;
-        }
-
-        public AsyncCaller setProgressBar(ProgressBar progressBar) {
-            this.progressBar = progressBar;
-            return this;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Manga mangaDB = new Manga();
-            List<Manga> mangaList = mangaDB.getMangas();
-            List<String> mangaIds = new ArrayList<>();
-
-            for(Manga dbManga: mangaList) {
-                mangaIds.add(dbManga.getI());
-            }
-
-            showFragment(new LoadingFragment() , false);
-
-            int i = 0;
-            int j = 0;
-            int percent = 0;
-            int listSize = myList.size();
-
-            Calendar c = new GregorianCalendar();
-            c.set(Calendar.HOUR_OF_DAY, 0);
-            c.set(Calendar.MINUTE, 0);
-            c.set(Calendar.SECOND, 0);
-            c.set(Calendar.MILLISECOND, 0);
-
-            publishProgress((int) 0);
-            ActiveAndroid.beginTransaction();
-            for (Manga newManga : myList ){
-                if(!mangaIds.contains(newManga.getI())) {
-                    newManga.save();
-                    i++;
-                } else {
-
-                    if(newManga.getLd() >= c.getTimeInMillis()) {
-                        mangaDB.updateManga(newManga);
-                        i++;
-                    }
-
-                }
-
-                if (i == 100 ) {
-                    percent = (j * 100 / listSize);
-                    publishProgress((int) (percent));
-                    ActiveAndroid.setTransactionSuccessful();
-                    ActiveAndroid.endTransaction();
-                    i = 0;
-                    ActiveAndroid.beginTransaction();
-                }
-                j++;
-            }
-
-            ActiveAndroid.setTransactionSuccessful();
-            ActiveAndroid.endTransaction();
-            return null;
-        }
-
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            this.progressBar.setProgress(values[0]);
-        }
-
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            linlaHeaderProgress.setVisibility(View.GONE);
-            showFragment(new HomeFragment() , false);
-        }
-    }
-
-    public void loadDatas(final LinearLayout linlaHeaderProgress){
-        mEden = ApiUtils.getService();
-        mEden.getResponse().enqueue(new Callback<Response>() {
-
-
-
-            @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-
-                if(response.isSuccessful()) {
-
-                    List<Manga> myList = response.body().getManga();
-
-                    ProgressBar progressBar = (ProgressBar) findViewById(R.id.loadingMangaBar);
-                    AsyncTask asyncCaller =  new AsyncCaller(myList, linlaHeaderProgress).setProgressBar(progressBar).execute();
-                }else {
-                    int statusCode  = response.code();
-                    // handle request errors depending on status code
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<Response> call, Throwable t) {
-                Log.d("MainActivity", "error loading from API");
-            }
-
-
-
-
-        });
-    }
-
 
 }

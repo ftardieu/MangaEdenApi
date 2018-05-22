@@ -3,6 +3,8 @@ package api.eden.manga.mangaedenapiandroid.fragments;
 
 
 import api.eden.manga.mangaedenapiandroid.application.Application;
+
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -78,9 +80,12 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Log.d("search" , "searchFragment");
+
         Profile profile = new Profile();
         profile = profile.getProfile();
+
+
+
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
@@ -94,21 +99,16 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
 
         if (savedInstanceState == null && !mAlreadyLoaded) {
             mAlreadyLoaded = true;
-            //Manga manga = new Manga();
-            //mangaList = manga.getMangas();
-
-            //On parse l'api
-
-            mAdapter = new MangasAdapter(getActivity(), mangaList , mangaList ,this , profile);
+            mAdapter = new MangasAdapter(getActivity(), mangaList , mangaList ,this , profile , recyclerView);
 
             loadMangaList(mangaList , mAdapter);
 
         }else{
-            mAdapter = new MangasAdapter(getActivity(),mangaList ,mAdapter.getMangaListFiltered() ,this , profile);
+            mAdapter = new MangasAdapter(getActivity(),mangaList ,mAdapter.getMangaListFiltered() ,this , profile , recyclerView);
             getActivity().setTitle("MangaEden") ;
-
         }
 
+        recyclerView.getRecycledViewPool().clear();
         recyclerView.setAdapter(mAdapter);
 
         return view;
@@ -224,7 +224,6 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
      private void  loadMangaList(final List<Manga> mangaList , final MangasAdapter mAdapter)
      {
          mEden = app.getMangaEden();
-         Log.d("test" , "test");
          mEden.getResponse().enqueue(new Callback<Response>() {
 
 
@@ -235,13 +234,15 @@ public class SearchFragment extends Fragment  implements MangasAdapter.MangasAda
                  if(response.isSuccessful()) {
 
                      mangaList.addAll(response.body().getManga());
+
                      Collections.sort(mangaList, new Comparator<Manga>() {
                          @Override
                          public int compare(Manga a1, Manga a2) {
                              return a2.getH() - a1.getH();
                          }
                      });
-                     //Collections.reverse(mangaList);
+
+                     recyclerView.getRecycledViewPool().clear();
                      mAdapter.notifyDataSetChanged();
 
                  }else {
