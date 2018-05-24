@@ -2,6 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:background="@drawable/manga"
     tools:context=".fragments.HomeFragment">
 
 
@@ -14,14 +16,12 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mes mangas" />
-
-
+            android:text="My mangas" />
 
          <android.support.v7.widget.RecyclerView
             android:id="@+id/listFavorites"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:scrollbars="vertical"
         />
 

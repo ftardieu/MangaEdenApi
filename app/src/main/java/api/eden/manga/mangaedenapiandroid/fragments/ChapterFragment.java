@@ -1,9 +1,9 @@
 package api.eden.manga.mangaedenapiandroid.fragments;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,6 +53,7 @@ public class ChapterFragment extends Fragment {
         inflater.inflate(R.menu.manga_btn , menu);
         if (fManga.getLast_chapter_read() != null ){
             menu.findItem(R.id.action_back).setVisible(true);
+
         }
     }
 
@@ -74,12 +74,12 @@ public class ChapterFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(
                 R.layout.fragment_chapter, container, false);
-
 
         chapter_id = getArguments().getString("favorites_chapter_id");
         manga_id = getArguments().getString("manga_id");
